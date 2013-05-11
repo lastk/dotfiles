@@ -1,0 +1,87 @@
+!- XFT ---------------------------------------------------------------------
+!Xft.dpi:                       96
+
+Xft.antialias:                 true
+!Xft.autohint:                  true
+Xft.hinting:                   true
+Xft.hintstyle:                 hintslight
+Xft.lcdfilter:                 lcddefault
+!Xft.rgba:                      rgb
+
+!- XTERM -------------------------------------------------------------------
+XTerm*termName:        xterm-256color
+XTerm*faceName:        Droid Sans Mono:pixelsize=12
+XTerm*dynamicColors:   true
+XTerm*utf8:            2
+XTerm*eightBitInput:   true
+XTerm*charClass: 33:48,35-38:48,39:43,42-47:48,58-59:48,61:48,63-64:48,126:48
+XTerm*saveLines: 65535
+XTerm*scrollbar:       false
+XTerm*scrollTtyOutput: false
+XTerm*scrollKey:       true
+XTerm*jumpScroll:      true
+XTerm*multiScroll:     true
+
+!- URXVT -------------------------------------------------------------------
+URxvt*font:		xft:Bitstream Vera Sans Mono:pixelsize=14:antialiasing=true:dpi=96:hiting=true
+URxvt*termName:         rxvt-unicode-256color
+URxvt*geometry:         80x24
+!URxvt*font:             xft:Droid Sans Mono:size=10
+!URxvt*font:             xft:terminus:size=11
+!URxvt*font:             xft:profont:size=12
+!URxvt*font:             xft:Envy Code R:size=12
+!URxvt*font:             xft:fixed:size=12
+!URxvt*font:             xft:anonymous pro:size=12
+!URxvt*font:             xft:unifont:size=13
+!URxvt*boldFont:         xft:unifont:size=13
+!URxvt*letterSpace:      -1
+!URxvt*fading:           30
+URxvt.depth:            32
+URxvt*transparent:      true
+URxvt*shading:          10
+URxvt*scrollBar:        off
+URxvt*scrollTtyOutput:  true
+URxvt*perl-ext-common:  default,matcher
+URxvt*urlLauncher:      /usr/bin/firefox
+URxvt*matcher.button:   2
+
+!- COLORS -----------------------------------------------------------------
+! livarp from  http://arpinux.org/x/doku.php/start:xresources
+URxvt*foreground: #bcbcbc
+URxvt*background: #000000
+URxvt*color0: #2E3436
+URxvt*color8: #555753
+URxvt*color1: #CC0000
+URxvt*color9: #EF2929
+URxvt*color2: #4E9A06
+URxvt*color10: #8AE234
+URxvt*color3: #C4A000
+URxvt*color11: #FCE94F
+URxvt*color4: #3465A4
+URxvt*color12: #729FCF
+URxvt*color5: #75507B
+URxvt*color13: #AD7FA8
+URxvt*color6: #06989A
+URxvt*color14: #34E2E2
+URxvt*color7: #D3D7CF
+URxvt*color15: #EEEEEC
+XTerm*foreground: #bcbcbc
+XTerm*background: #000000
+XTerm*color0: #2E3436
+XTerm*color8: #555753
+XTerm*color1: #CC0000
+XTerm*color9: #EF2929
+XTerm*color2: #4E9A06
+XTerm*color10: #8AE234
+XTerm*color3: #C4A000
+XTerm*color11: #FCE94F
+XTerm*color4: #3465A4
+XTerm*color12: #729FCF
+XTerm*color5: #75507B
+XTerm*color13: #AD7FA8
+XTerm*color6: #06989A
+XTerm*color14: #34E2E2
+XTerm*color7: #D3D7CF
+XTerm*color15: #EEEEEC
+
+Xcursor*theme: Neutral
