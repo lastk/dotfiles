@@ -29,3 +29,13 @@
         user = holman
 [mergetool]
         keepBackup = false
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[commit]
+	template = ~/.git_commit_msg.txt
