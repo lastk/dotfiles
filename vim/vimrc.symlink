@@ -126,4 +126,4 @@ set modelines=0
 set nomodeline
 
 " ================ Custom Settings ========================
-"so ~/.yadr/vim/settings.vim
+source ~/.vim/settings.vim
