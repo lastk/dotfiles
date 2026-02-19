@@ -135,6 +135,9 @@ Plugin 'vim-scripts/lastpos.vim'
 Plugin 'vim-scripts/sudo.vim'
 Plugin 'goldfeld/ctrlr.vim'
 Plugin 'editorconfig/editorconfig-vim'
+Plugin 'nvim-lua/plenary.nvim'
+Plugin 'nvim-telescope/telescope.nvim', { 'tag': '0.1.8' }
+ 
 
 call vundle#end() 
 

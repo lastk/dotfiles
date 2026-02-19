@@ -1,54 +1,89 @@
-# shortcut to this dotfiles path is $ZSH
-export ZSH=$HOME/.dotfiles
+# ========================
+# Dotfiles paths
+# ========================
+export ZSH="$HOME/.dotfiles"
+export PROJECTS="$HOME/Desktop/play"
+export TRY_PATH="$PROJECTS/tries"
 
-# your project folder that we can `c [tab]` to
-export PROJECTS=~/Desktop/play
-
-# Stash your environment variables in ~/.localrc. This means they'll stay out
-# of your main dotfiles repository (which may be public, like this one), but
-# you'll have access to them in your scripts.
-if [[ -a ~/.localrc ]]
-then
+# Load private environment variables from ~/.localrc
+if [[ -a ~/.localrc ]]; then
   source ~/.localrc
 fi
 
-# all of our zsh files
+# ========================
+# Load all .zsh files
+# ========================
 typeset -U config_files
 config_files=($ZSH/**/*.zsh)
 
-# load the path files
-for file in ${(M)config_files:#*/path.zsh}
-do
+# Load path files first
+for file in ${(M)config_files:#*/path.zsh}; do
   source $file
 done
 
-# load everything but the path and completion files
-for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
-do
+# Load everything but path and completion files
+for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
   source $file
 done
 
-# initialize autocomplete here, otherwise functions won't be loaded
-autoload -U compinit
+# ========================
+# Zsh autocomplete
+# ========================
+autoload -Uz compinit
 compinit
 
-# load every completion after autocomplete loads
-for file in ${(M)config_files:#*/completion.zsh}
-do
+# Load completion files after compinit
+for file in ${(M)config_files:#*/completion.zsh}; do
   source $file
 done
 
 unset config_files
 
-# Better history
-# Credits to https://coderwall.com/p/jpj_6q/zsh-better-history-searching-with-arrow-keys
+# ========================
+# Better history search
+# ========================
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search # Up
-bindkey "^[[B" down-line-or-beginning-search # Down
-. $HOME/.asdf/asdf.sh
-if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-        source /etc/profile.d/vte.sh
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
+# VTE terminals (Tilix, GNOME Terminal)
+if [[ $TILIX_ID ]] || [[ $VTE_VERSION ]]; then
+  source /etc/profile.d/vte.sh
 fi
+
+# ========================
+# ASDF (Pacman installation)
+# ========================
+# Source ASDF from Pacman
+if [[ -f /usr/share/zsh/site-functions/asdf.zsh ]]; then
+  source /usr/share/zsh/site-functions/asdf.zsh
+fi
+
+# Put shims first in PATH so asdf Ruby/Go override system versions
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+# Add ASDF completions to fpath
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+
+# Initialize compinit again for completions
+autoload -Uz compinit
+compinit
+
+# ========================
+# ASDF plugins / environment
+# ========================
+# Golang plugin
+ASDF_GOLANG_MOD_VERSION_ENABLED=true
+if [[ -f ${ASDF_DATA_DIR:-$HOME/.asdf}/plugins/golang/set-env.zsh ]]; then
+  source ${ASDF_DATA_DIR:-$HOME/.asdf}/plugins/golang/set-env.zsh
+fi
+
+# Put Go binaries before asdf shims to avoid buildid errors
+if command -v go &> /dev/null; then
+  export PATH="$(go env GOBIN):$(go env GOPATH)/bin:$PATH"
+fi
+
+eval "$(try init)"
