@@ -1,0 +1,5 @@
+t() {
+  raw="${1:-$(basename "$PWD")}"
+  session="$(printf '%s' "$raw" | tr ':. ' '___')"
+  tmux attach -t "$session" 2>/dev/null || tmux new -s "$session"
+}
