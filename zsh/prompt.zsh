@@ -1,53 +1,21 @@
 autoload colors && colors
-# cheers, @ehrenmurdick
-# http://github.com/ehrenmurdick/config/blob/master/zsh/prompt.zsh
+autoload -Uz vcs_info
 
-if (( $+commands[git] ))
-then
-  git="$commands[git]"
-else
-  git="/usr/bin/git"
-fi
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr 'dirty'
+zstyle ':vcs_info:git:*' formats '%b%u'
+zstyle ':vcs_info:git:*' actionformats '%b (%a)'
 
-git_branch() {
-  echo $($git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
-}
-
-git_dirty() {
-  if $(! $git status -s &> /dev/null)
-  then
-    echo ""
+# Color branch name: green if clean, red if dirty
+zstyle ':vcs_info:git*+set-message:*' hooks git-color-branch
+function +vi-git-color-branch() {
+  if [[ -n "${hook_com[unstaged]}" ]]; then
+    hook_com[branch]="%{$fg_bold[red]%}${hook_com[branch]}%{$reset_color%}"
   else
-    if [[ $($git status --porcelain) == "" ]]
-    then
-      echo "on %{$fg_bold[green]%}$(git_prompt_info)%{$reset_color%}"
-    else
-      echo "on %{$fg_bold[red]%}$(git_prompt_info)%{$reset_color%}"
-    fi
+    hook_com[branch]="%{$fg_bold[green]%}${hook_com[branch]}%{$reset_color%}"
   fi
-}
-
-git_prompt_info () {
- ref=$($git symbolic-ref HEAD 2>/dev/null) || return
-# echo "(%{\e[0;33m%}${ref#refs/heads/}%{\e[0m%})"
- echo "${ref#refs/heads/}"
-}
-
-# This assumes that you always have an origin named `origin`, and that you only
-# care about one specific origin. If this is not the case, you might want to use
-# `$git cherry -v @{upstream}` instead.
-need_push () {
-  if [ $($git rev-parse --is-inside-work-tree 2>/dev/null) ]
-  then
-    number=$($git cherry -v origin/$(git symbolic-ref --short HEAD) 2>/dev/null | wc -l | bc)
-
-    if [[ $number == 0 ]]
-    then
-      echo " "
-    else
-      echo " with %{$fg_bold[magenta]%}$number unpushed%{$reset_color%}"
-    fi
-  fi
+  hook_com[unstaged]=''
 }
 
 directory_name() {
@@ -55,23 +23,15 @@ directory_name() {
 }
 
 battery_status() {
-  if test ! "$(uname)" = "Darwin"
-  then
-    exit 0
-  fi
-
-  if [[ $(sysctl -n hw.model) == *"Book"* ]]
-  then
+  if [[ "$(uname)" != "Darwin" ]]; then return; fi
+  if [[ $(sysctl -n hw.model) == *"Book"* ]]; then
     $ZSH/bin/battery-status
   fi
 }
 
-export PROMPT=$'\n$(battery_status)in $(directory_name) $(git_dirty)$(need_push)\n› '
-set_prompt () {
-  export RPROMPT="%{$fg_bold[cyan]%}%{$reset_color%}"
-}
+export PROMPT=$'\n$(battery_status)in $(directory_name) ${vcs_info_msg_0_:+on $vcs_info_msg_0_}\n› '
 
 precmd() {
   title "zsh" "%m" "%55<...<%~"
-  set_prompt
+  vcs_info
 }

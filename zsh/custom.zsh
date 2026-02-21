@@ -1,8 +1,8 @@
 export EDITOR=vim
 
-#fasd 
-eval "$(fasd --init auto)"
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# fasd - cached init (only regenerates if fasd binary is updated)
+fasd_cache="${XDG_CACHE_HOME:-$HOME/.cache}/fasd-init-zsh"
+if [[ ! -f "$fasd_cache" || "$(command -v fasd)" -nt "$fasd_cache" ]]; then
+  fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install >| "$fasd_cache"
+fi
+source "$fasd_cache"

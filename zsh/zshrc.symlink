@@ -26,9 +26,11 @@ for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}; do
   source $file
 done
 
-# ========================
-# Zsh autocomplete
-# ========================
+# ASDF (Pacman installation) — add completions to fpath before compinit
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+
+# Zsh autocomplete — single call after all fpath modifications
 autoload -Uz compinit
 compinit
 
@@ -55,35 +57,16 @@ if [[ $TILIX_ID ]] || [[ $VTE_VERSION ]]; then
 fi
 
 # ========================
-# ASDF (Pacman installation)
-# ========================
-# Source ASDF from Pacman
-if [[ -f /usr/share/zsh/site-functions/asdf.zsh ]]; then
-  source /usr/share/zsh/site-functions/asdf.zsh
-fi
-
-# Put shims first in PATH so asdf Ruby/Go override system versions
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-
-# Add ASDF completions to fpath
-fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
-
-# Initialize compinit again for completions
-autoload -Uz compinit
-compinit
-
-# ========================
 # ASDF plugins / environment
 # ========================
-# Golang plugin
 ASDF_GOLANG_MOD_VERSION_ENABLED=true
 if [[ -f ${ASDF_DATA_DIR:-$HOME/.asdf}/plugins/golang/set-env.zsh ]]; then
   source ${ASDF_DATA_DIR:-$HOME/.asdf}/plugins/golang/set-env.zsh
 fi
 
-# Put Go binaries before asdf shims to avoid buildid errors
-if command -v go &> /dev/null; then
-  export PATH="$(go env GOBIN):$(go env GOPATH)/bin:$PATH"
+# Use variables set by set-env.zsh instead of spawning go env subprocesses
+if [[ -n "$GOPATH" ]]; then
+  export PATH="${GOBIN:+$GOBIN:}${GOPATH}/bin:$PATH"
 fi
 
 eval "$(try init)"
